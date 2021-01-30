@@ -20,10 +20,10 @@ function createCode(seed, n) {
     C.push("0x00");
     C.mload();
     C.div();
-    C.push("0xf47d33b5"); // MiMCSponge(uint256,uint256)
+    C.push("0x3f1a1187"); // MiMCSponge(uint256,uint256)
     C.eq();
     C.jmpi("start");
-    C.invalid();
+    C.stop();
 
     C.label("start");
     C.push("0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001");  // q
@@ -38,11 +38,23 @@ function createCode(seed, n) {
     C.dup(0);           // q q xL q xR q xL q
     C.dup(2);           // xL q q xL q xR q xL q
     C.dup(0);           // xL xL q q xL q xR q xL q
+
     C.mulmod();         // b=xL^2 q xL q xR q xL q
+
+
     C.dup(0);           // b b q xL q xR q xL q
     C.mulmod();         // c=xL^4 xL q xR q xL q
     C.mulmod();         // d=xL^5 xR q xL q
     C.addmod();         // e=xL^5+xR xL q (for next round: xL xR q)
+
+/*
+    C.push("0x00");
+    C.mstore();
+    C.push("0x20");
+    C.push("0x00");
+    C.return();
+*/
+
 
     for (let i=0; i<n-1; i++) {
         if (i < n-2) {
@@ -78,7 +90,8 @@ function createCode(seed, n) {
     C.push("0x00");
     C.return();
 
-    return C.createTxData();
+    // return C.createTxData();
+    return Web3Utils.bytesToHex(C.code)
 }
 
 module.exports.abi = [

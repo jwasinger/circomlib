@@ -38,7 +38,8 @@ class Contract {
             genLoadedLength = C.code.length;
         }
 
-        return Web3Utils.bytesToHex(C.code.concat(this.code));
+        return Web3Utils.bytesToHex(this.code);
+        // return Web3Utils.bytesToHex(C.code.concat(this.code));
     }
 
     stop() { this.code.push(0x00); }
